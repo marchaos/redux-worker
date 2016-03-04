@@ -13,7 +13,8 @@ const NqueenContainer = createClass({
 function mapStateToProps(state) {
 	return {
 		answer: state.nqueen.answer,
-		numberOfSquares: state.nqueen.numberOfSquares
+		numberOfSquares: state.nqueen.numberOfSquares,
+		isCalculating: state.nqueen.isCalculating
 	}
 }
 

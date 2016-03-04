@@ -13,7 +13,6 @@ export default createClass({
 
 	getInitialState() {
 	    return {
-	        isCalculating: false,
 			inputValue: 1
 	    };
 	},
@@ -25,33 +24,61 @@ export default createClass({
 	},
 
 	onClick() {
-		this.setState({
-			isCalculating: true,
-			answer: null
-		});
+		if (this.props.isCalculating) {
+			return;
+		}
 		this.props.actions.calculateNQueen(this.state.inputValue);
 	},
 
 	render() {
-		const { numberOfSquares, answer } = this.props
-		const { isCalculating } = this.state
+		const { numberOfSquares, answer, isCalculating } = this.props
 
-		let ans
+		let ans, bgColor
 
 		if (isCalculating) {
 			ans = 'calculating...'
+			bgColor = 'rgba(255, 0, 0, 0.2)'
 		} else {
 			ans = answer
+			bgColor = 'rgba(0, 255, 0, 0.2)'
 		}
 
 		return (
-			<div>
-				<div>{ 'Number of Square: ' + numberOfSquares}</div>
-				<div>{ 'answer: ' + ans }</div>
+			<div style={{
+				    height: '200px',
+				    width: '200px',
+				    textAlign: 'center',
+				    display: 'inline-block',
+				    boxShadow: '0 0 1px 1px rgba(0, 0, 0, 0.2)',
+				    borderRadius: '2px',
+				    padding: '8px 12px',
+				    backgroundColor: bgColor,
+				    margin: '4px'
+				}}>
+				<h2>N-Queen Solver</h2>
+				<h3>{ 'N = ' + numberOfSquares}</h3>
 				<input type='number'
-					   onChange={ this.onChange } 
-					   defaultValue='Enter number of squares'/>
-				<button onClick={ this.onClick }>Calc</button>
+					   onChange={ this.onChange }
+					   style={{
+					   		padding: '4px 8px',
+					   		outline: 'none',
+					   		border: 'none',
+					   		borderRadius: '2px',
+					   		margin: '4px'
+					   }}
+					   placeholder='Enter number...'/>
+				<div>{ ans }</div>
+				<button onClick={ this.onClick }
+						style={{
+					   		padding: '4px 8px',
+					   		outline: 'none',
+					   		border: 'none',
+					   		borderRadius: '2px',
+					   		margin: '4px',
+					   		cursor: 'pointer'
+					   }}>
+						Calc
+				</button>
 			</div>
 		)
 	}

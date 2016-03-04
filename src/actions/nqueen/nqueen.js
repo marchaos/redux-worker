@@ -1,7 +1,20 @@
 const calculateNQueen = (n) => {
-	return {
-		type: 'CALCULATE_NQUEEN',
-		number: n
+	return function(dispatch) {
+		dispatch({
+			type: 'START_NQUEEN'
+		});
+
+		setTimeout(function() {
+			dispatch({
+				type: 'CALCULATE_NQUEEN',
+				number: n
+			});
+
+			dispatch({
+				type: 'COMPLETE_NQUEEN'
+			});
+		}, 200);
+		
 	}
 }
 
