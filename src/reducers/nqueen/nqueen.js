@@ -15,7 +15,7 @@ const calculateNQueen = (state, n) => {
 	return {
 		numberOfSquares: n,
 		isCalculating: true,
-		answer: solve(+n).length
+		answer: +n < 16 ? solve(+n).length : 'N is too large...'
 	};
 }
 

@@ -3,16 +3,25 @@ import React, { createClass } from 'react'
 export default createClass({
 	getInitialState() {
 	    return {
-	        blink: true  
+	        steps: 0  
 	    };
 	},
 
 	componentDidMount() {
+		var v = 5;
 		setInterval(function() {
+			if (this.state.steps > 460) {
+				v = -5;
+			} 
+
+			if (this.state.steps < 0) {
+				v = 5;
+			}
+
 			this.setState({
-				blink: !this.state.blink
+				steps: this.state.steps + v
 			});
-		}.bind(this), 500);      
+		}.bind(this), 16);      
 	},
 
 	render() {
@@ -21,16 +30,16 @@ export default createClass({
 				    height: '200px',
 				    width: '200px',
 				    flex: '0 0 auto',
-				    textAlign: 'center',
 				    display: 'inline-block',
 				    boxShadow: '0 0 1px 1px rgba(0, 0, 0, 0.2)',
 				    borderRadius: '2px',
 				    padding: '8px 12px',
-				    backgroundColor: this.state.blink ? 'rgba(0, 173, 215, 0.5)' : 'rgba(0, 0, 0, 0.05)',
+				    backgroundColor: 'rgba(0, 0, 0, 0.05)',
 				    margin: '4px',
-				    transition: '500ms ease-in-out'
+		            position: 'relative',
+				    left: this.state.steps,
 				}}>
-				<h1>Blinker</h1>
+				<h1>Slider</h1>
 			</div>
 		)
 	},

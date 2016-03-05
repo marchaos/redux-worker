@@ -2,10 +2,13 @@ var path = require('path');
 var webpack = require('webpack');
  
 module.exports = {
-    entry: './src/main.js',
+    entry: {
+        main: './src/main.js',
+        worker: './src/reducers/worker.js'
+    },
     output: { 
         path: __dirname,
-        filename: './dist/bundle.js' 
+        filename: './dist/[name].bundle.js' 
     },
     module: {
         loaders: [

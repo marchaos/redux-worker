@@ -10,7 +10,7 @@ export default createClass({
 	componentDidMount() {
 		setInterval(function() {
 			this.setState({
-				degree: this.state.degree + 10
+				degree: this.state.degree + 5
 			});
 		}.bind(this), 16);      
 	},
@@ -20,28 +20,17 @@ export default createClass({
 			<div style={{
 				    height: '200px',
 				    width: '200px',
+				    flex: '0 0 auto',
 				    textAlign: 'center',
 				    display: 'inline-block',
 				    boxShadow: '0 0 1px 1px rgba(0, 0, 0, 0.2)',
 				    borderRadius: '2px',
 				    padding: '8px 12px',
 				    backgroundColor: 'rgba(0, 0, 0, 0.05)',
-				    margin: '4px'
+				    margin: '4px',
+				    transform: 'rotateY(' + this.state.degree + 'deg)'
 				}}>
 				<h1>Spinner</h1>
-				<div style={{
-		            'position': 'relative',
-		            'display': 'inline-block',
-		            'height': '70px',
-		            'left': '0',
-		            'right': '0',
-		            'width': '70px',
-		            'borderRadius': '50%',
-		            border: '2px solid rgba(0, 0, 0, 0.5)',
-		            'backgroundColor': 'rgba(255, 85, 0, 0.7)',
-		            'transformOrigin': 'bottom',
-		            'transform': 'rotateY(' + this.state.degree + 'deg)',
-		        }} />
 			</div>
 		)
 	},

@@ -46,7 +46,6 @@ export default createClass({
 		return (
 			<div style={{
 				    height: '200px',
-				    width: '200px',
 				    textAlign: 'center',
 				    display: 'inline-block',
 				    boxShadow: '0 0 1px 1px rgba(0, 0, 0, 0.2)',
@@ -64,7 +63,8 @@ export default createClass({
 					   		outline: 'none',
 					   		border: 'none',
 					   		borderRadius: '2px',
-					   		margin: '4px'
+					   		margin: '4px',
+						    fontSize: '16px'
 					   }}
 					   placeholder='Enter number...'/>
 				<div>{ ans }</div>
