@@ -1,11 +1,7 @@
 const applyWorker = (worker) => {
 	return createStore => (reducer, initialState, enhancer) => {
 		if (!(worker instanceof Worker)) {
-			throw new Error('Expect input to be a Web Worker.');
-		}
-
-		if (typeof Worker === 'undefined') {
-			console.error('Web Worker is not supported. Fall back to normal store.');
+			console.error('Expect input to be a Web Worker. Fall back to normal store.');
 			return createStore(reducer, initialState, enhancer);
 		}
 

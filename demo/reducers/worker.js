@@ -1,4 +1,4 @@
 import reducer from '../reducers'
-import { createWorker } from '../reduxWorker'
+import { createWorker } from '../../src/reduxWorker'
 
 createWorker(reducer);

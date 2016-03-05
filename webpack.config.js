@@ -3,8 +3,8 @@ var webpack = require('webpack');
  
 module.exports = {
     entry: {
-        main: './src/main.js',
-        worker: './src/reducers/worker.js'
+        main: './demo/main.js',
+        worker: './demo/reducers/worker.js'
     },
     output: { 
         path: __dirname,

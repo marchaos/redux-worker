@@ -5,7 +5,7 @@ import { createStore, applyMiddleware, compose } from 'redux'
 import thunk from 'redux-thunk'
 import rootReducer from './reducers'
 import App from './components/App'
-import { applyWorker } from './reduxWorker'
+import { applyWorker } from '../src/reduxWorker'
 
 const worker = new Worker('./worker.bundle.js');
 
