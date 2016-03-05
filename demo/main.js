@@ -5,14 +5,11 @@ import { createStore, applyMiddleware, compose } from 'redux'
 import thunk from 'redux-thunk'
 import rootReducer from './reducers'
 import App from './components/App'
-import { applyWorker } from '../src/reduxWorker'
 
-const worker = new Worker('./worker.bundle.js');
 
 const enhancer = compose(
 	// Middleware you want to use in development:
-	applyMiddleware(thunk),
-	applyWorker(worker)
+	applyMiddleware(thunk)
 );
 
 const store = createStore(rootReducer, {}, enhancer);
