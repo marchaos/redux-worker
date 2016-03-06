@@ -11,11 +11,16 @@ const worker = new Worker('./worker.bundle.js');
 
 const enhancer = compose(
 	// Middleware you want to use in development:
+	applyMiddleware(thunk)
+);
+
+const enhancerWithWorker = compose(
+	// Middleware you want to use in development:
 	applyMiddleware(thunk),
 	applyWorker(worker)
 );
 
-const store = createStore(rootReducer, {}, enhancer);
+const store = createStore(rootReducer, {}, enhancerWithWorker);
 
 render(
 	<Provider store={store}>

@@ -17,6 +17,12 @@ export default createClass({
 	    };
 	},
 
+	toggleWebWorker() {
+		var disableWebWorker = window.disableWebWorker;
+		window.disableWebWorker = !disableWebWorker;
+		this.forceUpdate();
+	},
+
 	onChange(e) {
 		this.setState({
 			inputValue: e.target.value
@@ -39,7 +45,7 @@ export default createClass({
 			ans = 'calculating...'
 			bgColor = 'rgba(255, 0, 0, 0.2)'
 		} else {
-			ans = answer
+			ans = 'Answer is ' + answer;
 			bgColor = 'rgba(0, 255, 0, 0.2)'
 		}
 
@@ -52,10 +58,31 @@ export default createClass({
 				    borderRadius: '2px',
 				    padding: '8px 12px',
 				    backgroundColor: bgColor,
-				    margin: '4px'
+				    margin: '4px',
+				    position: 'relative'
 				}}>
 				<h2>N-Queen Solver</h2>
+				<div style={{
+					position: 'absolute',
+					top: 8,
+					right: 8,
+					backgroundColor: 'rgba(0, 0, 0, 0.8)',
+					color: 'white',
+					padding: '4px 8px',
+					borderRadius: 3,
+					display: 'flex',
+					cursor: 'pointer'
+					}}
+					onClick={this.toggleWebWorker}>
+					<div>Web Worker</div>
+					<div style={{
+						fontWeight: 'bold',
+						marginLeft: 8,
+						color: window.disableWebWorker ? 'red' : 'green'
+					}}>{ window.disableWebWorker ? 'OFF' : 'ON'}</div>
+				</div>
 				<h3>{ 'N = ' + numberOfSquares}</h3>
+				<div>{ ans }</div>
 				<input type='number'
 					   onChange={ this.onChange }
 					   style={{
@@ -67,7 +94,6 @@ export default createClass({
 						    fontSize: '16px'
 					   }}
 					   placeholder='Enter number...'/>
-				<div>{ ans }</div>
 				<button onClick={ this.onClick }
 						style={{
 					   		padding: '4px 8px',

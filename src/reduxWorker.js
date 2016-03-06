@@ -23,8 +23,16 @@ const applyWorker = (worker) => {
 
 		// Replace dispatcher
 		store.dispatch = (action) => {
+			if (window.disableWebWorker) {
+				return next({
+					type: 'REDUX_WORKER___STATE_UPDATE',
+					state: reducer(store.getState(), action)
+				});
+			}
 			worker.postMessage(action);
 		}
+
+		store.isWorker = true;
 		
 		// Add worker events listener
 		worker.addEventListener('message', function(e) {
@@ -51,7 +59,8 @@ const createWorker = (reducer) => {
 			// Send new state to main thread
 			self.postMessage({
 				type: 'REDUX_WORKER___STATE_UPDATE',
-				state: state
+				state: state,
+				action: action
 			});
 		}
 	});
