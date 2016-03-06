@@ -71,10 +71,11 @@ export default createClass({
 					padding: '4px 8px',
 					borderRadius: 3,
 					display: 'flex',
-					cursor: 'pointer'
+					cursor: 'pointer',
+					alignItems: 'center'
 					}}
 					onClick={this.toggleWebWorker}>
-					<div>Web Worker</div>
+					<div style={{ fontSize: 12 }}>Web Worker</div>
 					<div style={{
 						fontWeight: 'bold',
 						marginLeft: 8,
