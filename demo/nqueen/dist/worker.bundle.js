@@ -47,11 +47,11 @@
 
 	'use strict';
 
-	var _reducers = __webpack_require__(182);
+	var _reducers = __webpack_require__(178);
 
 	var _reducers2 = _interopRequireDefault(_reducers);
 
-	var _reduxWorker = __webpack_require__(192);
+	var _reduxWorker = __webpack_require__(188);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -59,7 +59,7 @@
 
 /***/ },
 
-/***/ 5:
+/***/ 4:
 /***/ function(module, exports) {
 
 	// shim for using process in browser
@@ -157,7 +157,7 @@
 
 /***/ },
 
-/***/ 166:
+/***/ 165:
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -165,27 +165,27 @@
 	exports.__esModule = true;
 	exports.compose = exports.applyMiddleware = exports.bindActionCreators = exports.combineReducers = exports.createStore = undefined;
 
-	var _createStore = __webpack_require__(167);
+	var _createStore = __webpack_require__(166);
 
 	var _createStore2 = _interopRequireDefault(_createStore);
 
-	var _combineReducers = __webpack_require__(171);
+	var _combineReducers = __webpack_require__(170);
 
 	var _combineReducers2 = _interopRequireDefault(_combineReducers);
 
-	var _bindActionCreators = __webpack_require__(173);
+	var _bindActionCreators = __webpack_require__(172);
 
 	var _bindActionCreators2 = _interopRequireDefault(_bindActionCreators);
 
-	var _applyMiddleware = __webpack_require__(174);
+	var _applyMiddleware = __webpack_require__(173);
 
 	var _applyMiddleware2 = _interopRequireDefault(_applyMiddleware);
 
-	var _compose = __webpack_require__(175);
+	var _compose = __webpack_require__(174);
 
 	var _compose2 = _interopRequireDefault(_compose);
 
-	var _warning = __webpack_require__(172);
+	var _warning = __webpack_require__(171);
 
 	var _warning2 = _interopRequireDefault(_warning);
 
@@ -206,11 +206,11 @@
 	exports.bindActionCreators = _bindActionCreators2["default"];
 	exports.applyMiddleware = _applyMiddleware2["default"];
 	exports.compose = _compose2["default"];
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
 
-/***/ 167:
+/***/ 166:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -219,7 +219,7 @@
 	exports.ActionTypes = undefined;
 	exports["default"] = createStore;
 
-	var _isPlainObject = __webpack_require__(168);
+	var _isPlainObject = __webpack_require__(167);
 
 	var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
 
@@ -432,11 +432,11 @@
 
 /***/ },
 
-/***/ 168:
+/***/ 167:
 /***/ function(module, exports, __webpack_require__) {
 
-	var isHostObject = __webpack_require__(169),
-	    isObjectLike = __webpack_require__(170);
+	var isHostObject = __webpack_require__(168),
+	    isObjectLike = __webpack_require__(169);
 
 	/** `Object#toString` result references. */
 	var objectTag = '[object Object]';
@@ -505,7 +505,7 @@
 
 /***/ },
 
-/***/ 169:
+/***/ 168:
 /***/ function(module, exports) {
 
 	/**
@@ -532,7 +532,7 @@
 
 /***/ },
 
-/***/ 170:
+/***/ 169:
 /***/ function(module, exports) {
 
 	/**
@@ -567,7 +567,7 @@
 
 /***/ },
 
-/***/ 171:
+/***/ 170:
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -575,13 +575,13 @@
 	exports.__esModule = true;
 	exports["default"] = combineReducers;
 
-	var _createStore = __webpack_require__(167);
+	var _createStore = __webpack_require__(166);
 
-	var _isPlainObject = __webpack_require__(168);
+	var _isPlainObject = __webpack_require__(167);
 
 	var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
 
-	var _warning = __webpack_require__(172);
+	var _warning = __webpack_require__(171);
 
 	var _warning2 = _interopRequireDefault(_warning);
 
@@ -697,11 +697,11 @@
 	    return hasChanged ? nextState : state;
 	  };
 	}
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
 
-/***/ 172:
+/***/ 171:
 /***/ function(module, exports) {
 
 	'use strict';
@@ -731,7 +731,7 @@
 
 /***/ },
 
-/***/ 173:
+/***/ 172:
 /***/ function(module, exports) {
 
 	'use strict';
@@ -788,7 +788,7 @@
 
 /***/ },
 
-/***/ 174:
+/***/ 173:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -798,7 +798,7 @@
 	exports.__esModule = true;
 	exports["default"] = applyMiddleware;
 
-	var _compose = __webpack_require__(175);
+	var _compose = __webpack_require__(174);
 
 	var _compose2 = _interopRequireDefault(_compose);
 
@@ -851,7 +851,7 @@
 
 /***/ },
 
-/***/ 175:
+/***/ 174:
 /***/ function(module, exports) {
 
 	"use strict";
@@ -886,7 +886,7 @@
 
 /***/ },
 
-/***/ 182:
+/***/ 178:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -895,9 +895,9 @@
 		value: true
 	});
 
-	var _redux = __webpack_require__(166);
+	var _redux = __webpack_require__(165);
 
-	var _nqueen = __webpack_require__(183);
+	var _nqueen = __webpack_require__(179);
 
 	var _nqueen2 = _interopRequireDefault(_nqueen);
 
@@ -911,7 +911,7 @@
 
 /***/ },
 
-/***/ 183:
+/***/ 179:
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1003,77 +1003,135 @@
 
 /***/ },
 
-/***/ 192:
+/***/ 188:
 /***/ function(module, exports) {
 
-	'use strict';
+	/******/ (function(modules) { // webpackBootstrap
+	/******/ 	// The module cache
+	/******/ 	var installedModules = {};
 
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-	var applyWorker = function applyWorker(worker) {
-		return function (createStore) {
-			return function (reducer, initialState, enhancer) {
-				if (!(worker instanceof Worker)) {
-					console.error('Expect input to be a Web Worker. Fall back to normal store.');
-					return createStore(reducer, initialState, enhancer);
-				}
+	/******/ 	// The require function
+	/******/ 	function __webpack_require__(moduleId) {
 
-				// New reducer for workified store
-				var replacementReducer = function replacementReducer(state, action) {
-					switch (action.type) {
-						case 'REDUX_WORKER___STATE_UPDATE':
-							return action.state;
-						default:
-							return state;
+	/******/ 		// Check if module is in cache
+	/******/ 		if(installedModules[moduleId])
+	/******/ 			return installedModules[moduleId].exports;
+
+	/******/ 		// Create a new module (and put it into the cache)
+	/******/ 		var module = installedModules[moduleId] = {
+	/******/ 			exports: {},
+	/******/ 			id: moduleId,
+	/******/ 			loaded: false
+	/******/ 		};
+
+	/******/ 		// Execute the module function
+	/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+
+	/******/ 		// Flag the module as loaded
+	/******/ 		module.loaded = true;
+
+	/******/ 		// Return the exports of the module
+	/******/ 		return module.exports;
+	/******/ 	}
+
+
+	/******/ 	// expose the modules object (__webpack_modules__)
+	/******/ 	__webpack_require__.m = modules;
+
+	/******/ 	// expose the module cache
+	/******/ 	__webpack_require__.c = installedModules;
+
+	/******/ 	// __webpack_public_path__
+	/******/ 	__webpack_require__.p = "";
+
+	/******/ 	// Load entry module and return exports
+	/******/ 	return __webpack_require__(0);
+	/******/ })
+	/************************************************************************/
+	/******/ ([
+	/* 0 */
+	/***/ function(module, exports) {
+
+		'use strict';
+
+		Object.defineProperty(exports, "__esModule", {
+			value: true
+		});
+		var applyWorker = function applyWorker(worker) {
+			return function (createStore) {
+				return function (reducer, initialState, enhancer) {
+					if (!(worker instanceof Worker)) {
+						console.error('Expect input to be a Web Worker. Fall back to normal store.');
+						return createStore(reducer, initialState, enhancer);
 					}
+
+					// New reducer for workified store
+					var replacementReducer = function replacementReducer(state, action) {
+						switch (action.type) {
+							case 'REDUX_WORKER___STATE_UPDATE':
+								return action.state;
+							default:
+								return state;
+						}
+					};
+
+					// Create store using new reducer
+					var store = createStore(replacementReducer, reducer({}, {}), enhancer);
+
+					// Store reference of old dispatcher
+					var next = store.dispatch;
+
+					// Replace dispatcher
+					store.dispatch = function (action) {
+						if (window.disableWebWorker) {
+							return next({
+								type: 'REDUX_WORKER___STATE_UPDATE',
+								state: reducer(store.getState(), action)
+							});
+						}
+						worker.postMessage(action);
+					};
+
+					store.isWorker = true;
+
+					// Add worker events listener
+					worker.addEventListener('message', function (e) {
+						if (typeof e.data.type === 'string') {
+							next(e.data);
+						}
+					});
+
+					return store;
 				};
-
-				// Create store using new reducer
-				var store = createStore(replacementReducer, reducer({}, {}), enhancer);
-
-				// Store reference of old dispatcher
-				var next = store.dispatch;
-
-				// Replace dispatcher
-				store.dispatch = function (action) {
-					worker.postMessage(action);
-				};
-
-				// Add worker events listener
-				worker.addEventListener('message', function (e) {
-					if (typeof e.data.type === 'string') {
-						next(e.data);
-					}
-				});
-
-				return store;
 			};
 		};
-	};
 
-	var createWorker = function createWorker(reducer) {
-		// Make initial state
-		var state = reducer({}, {});
+		var createWorker = function createWorker(reducer) {
+			// Make initial state
+			var state = reducer({}, {});
 
-		self.addEventListener('message', function (e) {
-			var action = e.data;
+			self.addEventListener('message', function (e) {
+				var action = e.data;
 
-			if (typeof action.type === 'string') {
-				// Set new state
-				state = reducer(state, action);
+				if (typeof action.type === 'string') {
+					// Set new state
+					state = reducer(state, action);
 
-				// Send new state to main thread
-				self.postMessage({
-					type: 'REDUX_WORKER___STATE_UPDATE',
-					state: state
-				});
-			}
-		});
-	};
-	exports.applyWorker = applyWorker;
-	exports.createWorker = createWorker;
-	exports.default = { applyWorker: applyWorker, createWorker: createWorker };
+					// Send new state to main thread
+					self.postMessage({
+						type: 'REDUX_WORKER___STATE_UPDATE',
+						state: state,
+						action: action
+					});
+				}
+			});
+		};
+		exports.applyWorker = applyWorker;
+		exports.createWorker = createWorker;
+		exports.default = { applyWorker: applyWorker, createWorker: createWorker };
+
+	/***/ }
+	/******/ ]);
 
 /***/ }
 

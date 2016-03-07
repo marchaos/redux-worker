@@ -3,11 +3,12 @@ var webpack = require('webpack');
  
 module.exports = {
     entry: {
-        lib: './src/reduxWorker.js'
+        main: './main.js',
+        worker: './reducers/worker.js'
     },
-    output: {
-        library: 'ReduxWorker',
-        libraryTarget: 'umd'
+    output: { 
+        path: __dirname,
+        filename: './dist/[name].bundle.js' 
     },
     module: {
         loaders: [
