@@ -64,23 +64,25 @@
 
 	var _reducers2 = _interopRequireDefault(_reducers);
 
-	var _App = __webpack_require__(180);
+	var _App = __webpack_require__(181);
 
 	var _App2 = _interopRequireDefault(_App);
 
-	var _reduxWorker = __webpack_require__(188);
+	var _reduxWorker = __webpack_require__(189);
+
+	var _reduxLogger = __webpack_require__(191);
+
+	var _reduxLogger2 = _interopRequireDefault(_reduxLogger);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var worker = new Worker('./worker.bundle.js');
+	var logger = (0, _reduxLogger2.default)();
 
-	var enhancer = (0, _redux.compose)(
-	// Middleware you want to use in development:
-	(0, _redux.applyMiddleware)(_reduxThunk2.default));
+	var worker = new Worker('./dist/worker.bundle.js');
 
 	var enhancerWithWorker = (0, _redux.compose)(
 	// Middleware you want to use in development:
-	(0, _redux.applyMiddleware)(_reduxThunk2.default), (0, _reduxWorker.applyWorker)(worker));
+	(0, _redux.applyMiddleware)(_reduxThunk2.default, logger), (0, _reduxWorker.applyWorker)(worker));
 
 	var store = (0, _redux.createStore)(_reducers2.default, {}, enhancerWithWorker);
 
@@ -21057,13 +21059,20 @@
 
 /***/ },
 /* 179 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
+
+	var _solver = __webpack_require__(180);
+
+	var _solver2 = _interopRequireDefault(_solver);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 	var intState = {
 		isCalculating: false,
 		numberOfSquares: 1,
@@ -21081,7 +21090,7 @@
 		return {
 			numberOfSquares: n,
 			isCalculating: true,
-			answer: +n < 16 ? solve(+n).length : 'N is too large...'
+			answer: +n < 16 ? (0, _solver2.default)(+n).length : 'N is too large...'
 		};
 	};
 
@@ -21107,7 +21116,17 @@
 		}
 	};
 
-	function solve(n, z) {
+/***/ },
+/* 180 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	exports.default = function (n, z) {
 		var sol = [];
 
 		var _solve = function _solve(board) {
@@ -21144,10 +21163,10 @@
 		}
 
 		return sol;
-	}
+	};
 
 /***/ },
-/* 180 */
+/* 181 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21160,23 +21179,23 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _NqueenContainer = __webpack_require__(181);
+	var _NqueenContainer = __webpack_require__(182);
 
 	var _NqueenContainer2 = _interopRequireDefault(_NqueenContainer);
 
-	var _Counter = __webpack_require__(184);
+	var _Counter = __webpack_require__(185);
 
 	var _Counter2 = _interopRequireDefault(_Counter);
 
-	var _Blinker = __webpack_require__(185);
+	var _Blinker = __webpack_require__(186);
 
 	var _Blinker2 = _interopRequireDefault(_Blinker);
 
-	var _Spinner = __webpack_require__(186);
+	var _Spinner = __webpack_require__(187);
 
 	var _Spinner2 = _interopRequireDefault(_Spinner);
 
-	var _Slider = __webpack_require__(187);
+	var _Slider = __webpack_require__(188);
 
 	var _Slider2 = _interopRequireDefault(_Slider);
 
@@ -21219,7 +21238,7 @@
 	exports.default = App;
 
 /***/ },
-/* 181 */
+/* 182 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21236,11 +21255,11 @@
 
 	var _redux = __webpack_require__(165);
 
-	var _Nqueen = __webpack_require__(182);
+	var _Nqueen = __webpack_require__(183);
 
 	var _Nqueen2 = _interopRequireDefault(_Nqueen);
 
-	var _nqueen = __webpack_require__(183);
+	var _nqueen = __webpack_require__(184);
 
 	var _nqueen2 = _interopRequireDefault(_nqueen);
 
@@ -21269,7 +21288,7 @@
 	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatcherToProps)(NqueenContainer);
 
 /***/ },
-/* 182 */
+/* 183 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21314,6 +21333,13 @@
 				return;
 			}
 			this.props.actions.calculateNQueen(this.state.inputValue);
+		},
+		runTask: function runTask() {
+			this.props.actions.testWorker(this.state.inputValue).then(function (e) {
+				console.log('This task is run directly on the web worker without going thru Redux.');
+				console.log('The taskId is ' + e._taskId + '.');
+				console.log('The answer is ' + e.response + '.');
+			});
 		},
 		render: function render() {
 			var _props = this.props;
@@ -21414,13 +21440,26 @@
 							cursor: 'pointer'
 						} },
 					'Calc'
+				),
+				_react2.default.createElement(
+					'button',
+					{ onClick: this.runTask,
+						style: {
+							padding: '4px 8px',
+							outline: 'none',
+							border: 'none',
+							borderRadius: '2px',
+							margin: '4px',
+							cursor: 'pointer'
+						} },
+					'Run without Redux'
 				)
 			);
 		}
 	});
 
 /***/ },
-/* 183 */
+/* 184 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -21447,12 +21486,20 @@
 		};
 	};
 
+	var testWorker = function testWorker(n) {
+		return {
+			task: 'NQUEEN_TASK',
+			number: n
+		};
+	};
+
 	exports.default = {
-		calculateNQueen: calculateNQueen
+		calculateNQueen: calculateNQueen,
+		testWorker: testWorker
 	};
 
 /***/ },
-/* 184 */
+/* 185 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21510,7 +21557,7 @@
 	});
 
 /***/ },
-/* 185 */
+/* 186 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21564,7 +21611,7 @@
 	});
 
 /***/ },
-/* 186 */
+/* 187 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21618,7 +21665,7 @@
 	});
 
 /***/ },
-/* 187 */
+/* 188 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21681,135 +21728,542 @@
 	});
 
 /***/ },
-/* 188 */
-/***/ function(module, exports) {
+/* 189 */
+/***/ function(module, exports, __webpack_require__) {
 
-	/******/ (function(modules) { // webpackBootstrap
-	/******/ 	// The module cache
-	/******/ 	var installedModules = {};
+	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(module) {'use strict';
 
-	/******/ 	// The require function
-	/******/ 	function __webpack_require__(moduleId) {
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
-	/******/ 		// Check if module is in cache
-	/******/ 		if(installedModules[moduleId])
-	/******/ 			return installedModules[moduleId].exports;
+	(function webpackUniversalModuleDefinition(root, factory) {
+		if (( false ? 'undefined' : _typeof(exports)) === 'object' && ( false ? 'undefined' : _typeof(module)) === 'object') module.exports = factory();else if (true) !(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));else if ((typeof exports === 'undefined' ? 'undefined' : _typeof(exports)) === 'object') exports["ReduxWorker"] = factory();else root["ReduxWorker"] = factory();
+	})(undefined, function () {
+		return (/******/function (modules) {
+				// webpackBootstrap
+				/******/ // The module cache
+				/******/var installedModules = {};
 
-	/******/ 		// Create a new module (and put it into the cache)
-	/******/ 		var module = installedModules[moduleId] = {
-	/******/ 			exports: {},
-	/******/ 			id: moduleId,
-	/******/ 			loaded: false
-	/******/ 		};
+				/******/ // The require function
+				/******/function __webpack_require__(moduleId) {
 
-	/******/ 		// Execute the module function
-	/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+					/******/ // Check if module is in cache
+					/******/if (installedModules[moduleId])
+						/******/return installedModules[moduleId].exports;
 
-	/******/ 		// Flag the module as loaded
-	/******/ 		module.loaded = true;
+					/******/ // Create a new module (and put it into the cache)
+					/******/var module = installedModules[moduleId] = {
+						/******/exports: {},
+						/******/id: moduleId,
+						/******/loaded: false
+						/******/ };
 
-	/******/ 		// Return the exports of the module
-	/******/ 		return module.exports;
-	/******/ 	}
+					/******/ // Execute the module function
+					/******/modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
 
+					/******/ // Flag the module as loaded
+					/******/module.loaded = true;
 
-	/******/ 	// expose the modules object (__webpack_modules__)
-	/******/ 	__webpack_require__.m = modules;
+					/******/ // Return the exports of the module
+					/******/return module.exports;
+					/******/
+				}
 
-	/******/ 	// expose the module cache
-	/******/ 	__webpack_require__.c = installedModules;
+				/******/ // expose the modules object (__webpack_modules__)
+				/******/__webpack_require__.m = modules;
 
-	/******/ 	// __webpack_public_path__
-	/******/ 	__webpack_require__.p = "";
+				/******/ // expose the module cache
+				/******/__webpack_require__.c = installedModules;
 
-	/******/ 	// Load entry module and return exports
-	/******/ 	return __webpack_require__(0);
-	/******/ })
-	/************************************************************************/
-	/******/ ([
-	/* 0 */
-	/***/ function(module, exports) {
+				/******/ // __webpack_public_path__
+				/******/__webpack_require__.p = "";
 
-		'use strict';
+				/******/ // Load entry module and return exports
+				/******/return __webpack_require__(0);
+				/******/
+			}(
+			/************************************************************************/
+			/******/[
+			/* 0 */
+			/***/function (module, exports, __webpack_require__) {
 
-		Object.defineProperty(exports, "__esModule", {
-			value: true
-		});
-		var applyWorker = function applyWorker(worker) {
-			return function (createStore) {
-				return function (reducer, initialState, enhancer) {
-					if (!(worker instanceof Worker)) {
-						console.error('Expect input to be a Web Worker. Fall back to normal store.');
-						return createStore(reducer, initialState, enhancer);
-					}
+				'use strict';
 
-					// New reducer for workified store
-					var replacementReducer = function replacementReducer(state, action) {
-						switch (action.type) {
-							case 'REDUX_WORKER___STATE_UPDATE':
-								return action.state;
-							default:
-								return state;
+				Object.defineProperty(exports, "__esModule", {
+					value: true
+				});
+				exports.createWorker = exports.applyWorker = undefined;
+
+				var _createWorker = __webpack_require__(1);
+
+				var _createWorker2 = _interopRequireDefault(_createWorker);
+
+				var _applyWorker = __webpack_require__(2);
+
+				var _applyWorker2 = _interopRequireDefault(_applyWorker);
+
+				function _interopRequireDefault(obj) {
+					return obj && obj.__esModule ? obj : { default: obj };
+				}
+
+				exports.applyWorker = _applyWorker2.default;
+				exports.createWorker = _createWorker2.default;
+				exports.default = { applyWorker: _applyWorker2.default, createWorker: _createWorker2.default };
+
+				/***/
+			},
+			/* 1 */
+			/***/function (module, exports) {
+
+				'use strict';
+
+				Object.defineProperty(exports, "__esModule", {
+					value: true
+				});
+
+				var _createClass = function () {
+					function defineProperties(target, props) {
+						for (var i = 0; i < props.length; i++) {
+							var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
 						}
+					}return function (Constructor, protoProps, staticProps) {
+						if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
 					};
+				}();
 
-					// Create store using new reducer
-					var store = createStore(replacementReducer, reducer({}, {}), enhancer);
+				function _classCallCheck(instance, Constructor) {
+					if (!(instance instanceof Constructor)) {
+						throw new TypeError("Cannot call a class as a function");
+					}
+				}
 
-					// Store reference of old dispatcher
-					var next = store.dispatch;
+				var createWorker = function createWorker(reducer) {
+					// Initialize ReduxWorekr
+					var worker = new ReduxWorker();
 
-					// Replace dispatcher
-					store.dispatch = function (action) {
-						if (window.disableWebWorker) {
-							return next({
-								type: 'REDUX_WORKER___STATE_UPDATE',
-								state: reducer(store.getState(), action)
+					self.addEventListener('message', function (e) {
+						var action = e.data;
+
+						if (typeof action.type === 'string') {
+							if (!worker.reducer || typeof worker.reducer !== 'function') {
+								throw new Error('Expect reducer to be function. Have you registerReducer yet?');
+							}
+
+							// Set new state
+							var state = worker.state;
+							state = worker.state = worker.reducer(state, action);
+							state = worker.transform(state);
+
+							// Send new state to main thread
+							self.postMessage({
+								type: action.type,
+								state: state,
+								action: action
+							});
+
+							return;
+						}
+
+						if (typeof action.task === 'string' && typeof action._taskId === 'number') {
+							var taskRunner = worker.tasks[action.task];
+
+							if (!taskRunner || typeof taskRunner !== 'function') {
+								throw new Error('Cannot find runner for task ' + action.task + '. Have you registerTask yet?');
+							}
+
+							// Send new state to main thread
+							self.postMessage({
+								_taskId: action._taskId,
+								response: taskRunner(action)
 							});
 						}
-						worker.postMessage(action);
-					};
-
-					store.isWorker = true;
-
-					// Add worker events listener
-					worker.addEventListener('message', function (e) {
-						if (typeof e.data.type === 'string') {
-							next(e.data);
-						}
 					});
 
-					return store;
+					return worker;
 				};
-			};
-		};
 
-		var createWorker = function createWorker(reducer) {
-			// Make initial state
-			var state = reducer({}, {});
+				var ReduxWorker = function () {
+					function ReduxWorker() {
+						_classCallCheck(this, ReduxWorker);
 
-			self.addEventListener('message', function (e) {
-				var action = e.data;
+						// Taskrunners
+						this.tasks = {};
 
-				if (typeof action.type === 'string') {
-					// Set new state
-					state = reducer(state, action);
+						// Redux-specific variables
+						this.state = {};
+						this.reducer = null;
+						this.transform = function (state) {
+							return state;
+						};
+					}
 
-					// Send new state to main thread
-					self.postMessage({
-						type: 'REDUX_WORKER___STATE_UPDATE',
-						state: state,
-						action: action
+					_createClass(ReduxWorker, [{
+						key: 'registerReducer',
+						value: function registerReducer(reducer, transform) {
+							this.reducer = reducer;
+							this.state = reducer({}, {});
+						}
+					}, {
+						key: 'registerTask',
+						value: function registerTask(name, taskFn) {
+							this.tasks[name] = taskFn;
+						}
+					}]);
+
+					return ReduxWorker;
+				}();
+
+				exports.default = createWorker;
+
+				/***/
+			},
+			/* 2 */
+			/***/function (module, exports) {
+
+				'use strict';
+
+				Object.defineProperty(exports, "__esModule", {
+					value: true
+				});
+				var defer = function defer() {
+					var result = {};
+					result.promise = new Promise(function (resolve, reject) {
+						result.resolve = resolve;
+						result.reject = reject;
 					});
-				}
-			});
-		};
-		exports.applyWorker = applyWorker;
-		exports.createWorker = createWorker;
-		exports.default = { applyWorker: applyWorker, createWorker: createWorker };
+					return result;
+				};
 
-	/***/ }
-	/******/ ]);
+				var applyWorker = function applyWorker(worker) {
+					return function (createStore) {
+						return function (reducer, initialState, enhancer) {
+							if (!(worker instanceof Worker)) {
+								console.error('Expect input to be a Web Worker. Fall back to normal store.');
+								return createStore(reducer, initialState, enhancer);
+							}
+
+							// New reducer for workified store
+							var replacementReducer = function replacementReducer(state, action) {
+								if (action.state) {
+									return action.state;
+								}
+								return state;
+							};
+
+							// Start task id;
+							var taskId = 0;
+							var taskCompleteCallbacks = {};
+
+							// Create store using new reducer
+							var store = createStore(replacementReducer, reducer({}, {}), enhancer);
+
+							// Store reference of old dispatcher
+							var next = store.dispatch;
+
+							// Replace dispatcher
+							store.dispatch = function (action) {
+								if (typeof action.type === 'string') {
+									if (window.disableWebWorker) {
+										return next({
+											type: action.type,
+											state: reducer(store.getState(), action)
+										});
+									}
+									worker.postMessage(action);
+								}
+
+								if (typeof action.task === 'string') {
+									var task = Object.assign({}, action, { _taskId: taskId });
+									var deferred = defer();
+
+									taskCompleteCallbacks[taskId] = deferred;
+									taskId++;
+									worker.postMessage(task);
+									return deferred.promise;
+								}
+							};
+
+							store.isWorker = true;
+
+							// Add worker events listener
+							worker.addEventListener('message', function (e) {
+								var action = e.data;
+								if (typeof action.type === 'string') {
+									next(action);
+								}
+
+								if (typeof action._taskId === 'number') {
+									var wrapped = taskCompleteCallbacks[action._taskId];
+
+									if (wrapped) {
+										wrapped.resolve(action);
+										delete taskCompleteCallbacks[action._taskId];
+									}
+								}
+							});
+
+							return store;
+						};
+					};
+				};
+
+				exports.default = applyWorker;
+
+				/***/
+			}
+			/******/])
+		);
+	});
+	;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(190)(module)))
+
+/***/ },
+/* 190 */
+/***/ function(module, exports) {
+
+	module.exports = function(module) {
+		if(!module.webpackPolyfill) {
+			module.deprecate = function() {};
+			module.paths = [];
+			// module.parent = undefined by default
+			module.children = [];
+			module.webpackPolyfill = 1;
+		}
+		return module;
+	}
+
+
+/***/ },
+/* 191 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+	function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.constructor === Symbol ? "symbol" : typeof obj; }
+
+	var repeat = function repeat(str, times) {
+	  return new Array(times + 1).join(str);
+	};
+	var pad = function pad(num, maxLength) {
+	  return repeat("0", maxLength - num.toString().length) + num;
+	};
+	var formatTime = function formatTime(time) {
+	  return "@ " + pad(time.getHours(), 2) + ":" + pad(time.getMinutes(), 2) + ":" + pad(time.getSeconds(), 2) + "." + pad(time.getMilliseconds(), 3);
+	};
+
+	// Use the new performance api to get better precision if available
+	var timer = typeof performance !== "undefined" && typeof performance.now === "function" ? performance : Date;
+
+	/**
+	 * parse the level option of createLogger
+	 *
+	 * @property {string | function | object} level - console[level]
+	 * @property {object} action
+	 * @property {array} payload
+	 * @property {string} type
+	 */
+
+	function getLogLevel(level, action, payload, type) {
+	  switch (typeof level === "undefined" ? "undefined" : _typeof(level)) {
+	    case "object":
+	      return typeof level[type] === "function" ? level[type].apply(level, _toConsumableArray(payload)) : level[type];
+	    case "function":
+	      return level(action);
+	    default:
+	      return level;
+	  }
+	}
+
+	/**
+	 * Creates logger with followed options
+	 *
+	 * @namespace
+	 * @property {object} options - options for logger
+	 * @property {string | function | object} options.level - console[level]
+	 * @property {boolean} options.duration - print duration of each action?
+	 * @property {boolean} options.timestamp - print timestamp with each action?
+	 * @property {object} options.colors - custom colors
+	 * @property {object} options.logger - implementation of the `console` API
+	 * @property {boolean} options.logErrors - should errors in action execution be caught, logged, and re-thrown?
+	 * @property {boolean} options.collapsed - is group collapsed?
+	 * @property {boolean} options.predicate - condition which resolves logger behavior
+	 * @property {function} options.stateTransformer - transform state before print
+	 * @property {function} options.actionTransformer - transform action before print
+	 * @property {function} options.errorTransformer - transform error before print
+	 */
+
+	function createLogger() {
+	  var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+	  var _options$level = options.level;
+	  var level = _options$level === undefined ? "log" : _options$level;
+	  var _options$logger = options.logger;
+	  var logger = _options$logger === undefined ? console : _options$logger;
+	  var _options$logErrors = options.logErrors;
+	  var logErrors = _options$logErrors === undefined ? true : _options$logErrors;
+	  var collapsed = options.collapsed;
+	  var predicate = options.predicate;
+	  var _options$duration = options.duration;
+	  var duration = _options$duration === undefined ? false : _options$duration;
+	  var _options$timestamp = options.timestamp;
+	  var timestamp = _options$timestamp === undefined ? true : _options$timestamp;
+	  var transformer = options.transformer;
+	  var _options$stateTransfo = options.stateTransformer;
+	  var // deprecated
+	  stateTransformer = _options$stateTransfo === undefined ? function (state) {
+	    return state;
+	  } : _options$stateTransfo;
+	  var _options$actionTransf = options.actionTransformer;
+	  var actionTransformer = _options$actionTransf === undefined ? function (actn) {
+	    return actn;
+	  } : _options$actionTransf;
+	  var _options$errorTransfo = options.errorTransformer;
+	  var errorTransformer = _options$errorTransfo === undefined ? function (error) {
+	    return error;
+	  } : _options$errorTransfo;
+	  var _options$colors = options.colors;
+	  var colors = _options$colors === undefined ? {
+	    title: function title() {
+	      return "#000000";
+	    },
+	    prevState: function prevState() {
+	      return "#9E9E9E";
+	    },
+	    action: function action() {
+	      return "#03A9F4";
+	    },
+	    nextState: function nextState() {
+	      return "#4CAF50";
+	    },
+	    error: function error() {
+	      return "#F20404";
+	    }
+	  } : _options$colors;
+
+	  // exit if console undefined
+
+	  if (typeof logger === "undefined") {
+	    return function () {
+	      return function (next) {
+	        return function (action) {
+	          return next(action);
+	        };
+	      };
+	    };
+	  }
+
+	  if (transformer) {
+	    console.error("Option 'transformer' is deprecated, use stateTransformer instead");
+	  }
+
+	  var logBuffer = [];
+	  function printBuffer() {
+	    logBuffer.forEach(function (logEntry, key) {
+	      var started = logEntry.started;
+	      var startedTime = logEntry.startedTime;
+	      var action = logEntry.action;
+	      var prevState = logEntry.prevState;
+	      var error = logEntry.error;
+	      var took = logEntry.took;
+	      var nextState = logEntry.nextState;
+
+	      var nextEntry = logBuffer[key + 1];
+	      if (nextEntry) {
+	        nextState = nextEntry.prevState;
+	        took = nextEntry.started - started;
+	      }
+	      // message
+	      var formattedAction = actionTransformer(action);
+	      var isCollapsed = typeof collapsed === "function" ? collapsed(function () {
+	        return nextState;
+	      }, action) : collapsed;
+
+	      var formattedTime = formatTime(startedTime);
+	      var titleCSS = colors.title ? "color: " + colors.title(formattedAction) + ";" : null;
+	      var title = "action " + (timestamp ? formattedTime : "") + " " + formattedAction.type + " " + (duration ? "(in " + took.toFixed(2) + " ms)" : "");
+
+	      // render
+	      try {
+	        if (isCollapsed) {
+	          if (colors.title) logger.groupCollapsed("%c " + title, titleCSS);else logger.groupCollapsed(title);
+	        } else {
+	          if (colors.title) logger.group("%c " + title, titleCSS);else logger.group(title);
+	        }
+	      } catch (e) {
+	        logger.log(title);
+	      }
+
+	      var prevStateLevel = getLogLevel(level, formattedAction, [prevState], "prevState");
+	      var actionLevel = getLogLevel(level, formattedAction, [formattedAction], "action");
+	      var errorLevel = getLogLevel(level, formattedAction, [error, prevState], "error");
+	      var nextStateLevel = getLogLevel(level, formattedAction, [nextState], "nextState");
+
+	      if (prevStateLevel) {
+	        if (colors.prevState) logger[prevStateLevel]("%c prev state", "color: " + colors.prevState(prevState) + "; font-weight: bold", prevState);else logger[prevStateLevel]("prev state", prevState);
+	      }
+
+	      if (actionLevel) {
+	        if (colors.action) logger[actionLevel]("%c action", "color: " + colors.action(formattedAction) + "; font-weight: bold", formattedAction);else logger[actionLevel]("action", formattedAction);
+	      }
+
+	      if (error && errorLevel) {
+	        if (colors.error) logger[errorLevel]("%c error", "color: " + colors.error(error, prevState) + "; font-weight: bold", error);else logger[errorLevel]("error", error);
+	      }
+
+	      if (nextStateLevel) {
+	        if (colors.nextState) logger[nextStateLevel]("%c next state", "color: " + colors.nextState(nextState) + "; font-weight: bold", nextState);else logger[nextStateLevel]("next state", nextState);
+	      }
+
+	      try {
+	        logger.groupEnd();
+	      } catch (e) {
+	        logger.log("—— log end ——");
+	      }
+	    });
+	    logBuffer.length = 0;
+	  }
+
+	  return function (_ref) {
+	    var getState = _ref.getState;
+	    return function (next) {
+	      return function (action) {
+	        // exit early if predicate function returns false
+	        if (typeof predicate === "function" && !predicate(getState, action)) {
+	          return next(action);
+	        }
+
+	        var logEntry = {};
+	        logBuffer.push(logEntry);
+
+	        logEntry.started = timer.now();
+	        logEntry.startedTime = new Date();
+	        logEntry.prevState = stateTransformer(getState());
+	        logEntry.action = action;
+
+	        var returnedValue = undefined;
+	        if (logErrors) {
+	          try {
+	            returnedValue = next(action);
+	          } catch (e) {
+	            logEntry.error = errorTransformer(e);
+	          }
+	        } else {
+	          returnedValue = next(action);
+	        }
+
+	        logEntry.took = timer.now() - logEntry.started;
+	        logEntry.nextState = stateTransformer(getState());
+
+	        printBuffer();
+
+	        if (logEntry.error) throw logEntry.error;
+	        return returnedValue;
+	      };
+	    };
+	  };
+	}
+
+	module.exports = createLogger;
 
 /***/ }
 /******/ ]);
