@@ -6,17 +6,15 @@ import thunk from 'redux-thunk'
 import rootReducer from './reducers'
 import App from './components/App'
 import { applyWorker } from 'redux-worker'
+import createLogger from 'redux-logger';
+
+const logger = createLogger();
 
 const worker = new Worker('./dist/worker.bundle.js');
 
-const enhancer = compose(
-	// Middleware you want to use in development:
-	applyMiddleware(thunk)
-);
-
 const enhancerWithWorker = compose(
 	// Middleware you want to use in development:
-	applyMiddleware(thunk),
+	applyMiddleware(thunk, logger),
 	applyWorker(worker)
 );
 

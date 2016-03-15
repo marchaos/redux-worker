@@ -36,6 +36,15 @@ export default createClass({
 		this.props.actions.calculateNQueen(this.state.inputValue);
 	},
 
+	runTask() {
+		this.props.actions.testWorker(this.state.inputValue)
+			.then(function(e) {
+				console.log('This task is run directly on the web worker without going thru Redux.');
+				console.log(`The taskId is ${e._taskId}.`);
+				console.log(`The answer is ${e.response}.`);
+			});
+	},
+
 	render() {
 		const { numberOfSquares, answer, isCalculating } = this.props
 
@@ -106,6 +115,15 @@ export default createClass({
 					   }}>
 						Calc
 				</button>
+				<button onClick={ this.runTask }
+						style={{
+					   		padding: '4px 8px',
+					   		outline: 'none',
+					   		border: 'none',
+					   		borderRadius: '2px',
+					   		margin: '4px',
+					   		cursor: 'pointer'
+					   }}>Run without Redux</button>
 			</div>
 		)
 	}

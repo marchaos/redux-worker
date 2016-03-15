@@ -18,6 +18,14 @@ const calculateNQueen = (n) => {
 	}
 }
 
+const testWorker = (n) => {
+	return {
+		task: 'NQUEEN_TASK',
+		number: n
+	};
+}
+
 export default {
-	calculateNQueen
+	calculateNQueen,
+	testWorker
 }

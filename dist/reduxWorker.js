@@ -52,6 +52,31 @@ return /******/ (function(modules) { // webpackBootstrap
 /************************************************************************/
 /******/ ([
 /* 0 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.createWorker = exports.applyWorker = undefined;
+
+	var _createWorker = __webpack_require__(1);
+
+	var _createWorker2 = _interopRequireDefault(_createWorker);
+
+	var _applyWorker = __webpack_require__(2);
+
+	var _applyWorker2 = _interopRequireDefault(_applyWorker);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.applyWorker = _applyWorker2.default;
+	exports.createWorker = _createWorker2.default;
+	exports.default = { applyWorker: _applyWorker2.default, createWorker: _createWorker2.default };
+
+/***/ },
+/* 1 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -59,6 +84,107 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var createWorker = function createWorker(reducer) {
+		// Initialize ReduxWorekr
+		var worker = new ReduxWorker();
+
+		self.addEventListener('message', function (e) {
+			var action = e.data;
+
+			if (typeof action.type === 'string') {
+				if (!worker.reducer || typeof worker.reducer !== 'function') {
+					throw new Error('Expect reducer to be function. Have you registerReducer yet?');
+				}
+
+				// Set new state
+				var state = worker.state;
+				state = worker.state = worker.reducer(state, action);
+				state = worker.transform(state);
+
+				// Send new state to main thread
+				self.postMessage({
+					type: action.type,
+					state: state,
+					action: action
+				});
+
+				return;
+			}
+
+			if (typeof action.task === 'string' && typeof action._taskId === 'number') {
+				var taskRunner = worker.tasks[action.task];
+
+				if (!taskRunner || typeof taskRunner !== 'function') {
+					throw new Error('Cannot find runner for task ' + action.task + '. Have you registerTask yet?');
+				}
+
+				// Send new state to main thread
+				self.postMessage({
+					_taskId: action._taskId,
+					response: taskRunner(action)
+				});
+			}
+		});
+
+		return worker;
+	};
+
+	var ReduxWorker = function () {
+		function ReduxWorker() {
+			_classCallCheck(this, ReduxWorker);
+
+			// Taskrunners
+			this.tasks = {};
+
+			// Redux-specific variables
+			this.state = {};
+			this.reducer = null;
+			this.transform = function (state) {
+				return state;
+			};
+		}
+
+		_createClass(ReduxWorker, [{
+			key: 'registerReducer',
+			value: function registerReducer(reducer, transform) {
+				this.reducer = reducer;
+				this.state = reducer({}, {});
+			}
+		}, {
+			key: 'registerTask',
+			value: function registerTask(name, taskFn) {
+				this.tasks[name] = taskFn;
+			}
+		}]);
+
+		return ReduxWorker;
+	}();
+
+	exports.default = createWorker;
+
+/***/ },
+/* 2 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	var defer = function defer() {
+		var result = {};
+		result.promise = new Promise(function (resolve, reject) {
+			result.resolve = resolve;
+			result.reject = reject;
+		});
+		return result;
+	};
+
 	var applyWorker = function applyWorker(worker) {
 		return function (createStore) {
 			return function (reducer, initialState, enhancer) {
@@ -69,13 +195,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 				// New reducer for workified store
 				var replacementReducer = function replacementReducer(state, action) {
-					switch (action.type) {
-						case 'REDUX_WORKER___STATE_UPDATE':
-							return action.state;
-						default:
-							return state;
+					if (action.state) {
+						return action.state;
 					}
+					return state;
 				};
+
+				// Start task id;
+				var taskId = 0;
+				var taskCompleteCallbacks = {};
 
 				// Create store using new reducer
 				var store = createStore(replacementReducer, reducer({}, {}), enhancer);
@@ -85,21 +213,43 @@ return /******/ (function(modules) { // webpackBootstrap
 
 				// Replace dispatcher
 				store.dispatch = function (action) {
-					if (window.disableWebWorker) {
-						return next({
-							type: 'REDUX_WORKER___STATE_UPDATE',
-							state: reducer(store.getState(), action)
-						});
+					if (typeof action.type === 'string') {
+						if (window.disableWebWorker) {
+							return next({
+								type: action.type,
+								state: reducer(store.getState(), action)
+							});
+						}
+						worker.postMessage(action);
 					}
-					worker.postMessage(action);
+
+					if (typeof action.task === 'string') {
+						var task = Object.assign({}, action, { _taskId: taskId });
+						var deferred = defer();
+
+						taskCompleteCallbacks[taskId] = deferred;
+						taskId++;
+						worker.postMessage(task);
+						return deferred.promise;
+					}
 				};
 
 				store.isWorker = true;
 
 				// Add worker events listener
 				worker.addEventListener('message', function (e) {
-					if (typeof e.data.type === 'string') {
-						next(e.data);
+					var action = e.data;
+					if (typeof action.type === 'string') {
+						next(action);
+					}
+
+					if (typeof action._taskId === 'number') {
+						var wrapped = taskCompleteCallbacks[action._taskId];
+
+						if (wrapped) {
+							wrapped.resolve(action);
+							delete taskCompleteCallbacks[action._taskId];
+						}
 					}
 				});
 
@@ -108,29 +258,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		};
 	};
 
-	var createWorker = function createWorker(reducer) {
-		// Make initial state
-		var state = reducer({}, {});
-
-		self.addEventListener('message', function (e) {
-			var action = e.data;
-
-			if (typeof action.type === 'string') {
-				// Set new state
-				state = reducer(state, action);
-
-				// Send new state to main thread
-				self.postMessage({
-					type: 'REDUX_WORKER___STATE_UPDATE',
-					state: state,
-					action: action
-				});
-			}
-		});
-	};
-	exports.applyWorker = applyWorker;
-	exports.createWorker = createWorker;
-	exports.default = { applyWorker: applyWorker, createWorker: createWorker };
+	exports.default = applyWorker;
 
 /***/ }
 /******/ ])
