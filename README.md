@@ -26,8 +26,8 @@ The main purpose of Redux-Worker is to provide a simple way to start using web w
 It spawns just one Web Worker instance, so don't give it more credit than it deserves. It does not provide an interface for spwarning multiple workers and balancing work between, which is a much more complicated problem and not one that Redux-Worker is trying to solve. 
 
 ## Demos
-
-To run the demo, cd into the demo directory, and then:
+  - [N-Queen Solver](http://chikeichan.github.io/redux-worker/demo/nqueen/index.html)
+To run the demo locally, cd into the demo directory, and then:
 ```bash
 npm i
 webpack-dev-server
