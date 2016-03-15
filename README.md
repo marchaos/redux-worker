@@ -27,6 +27,7 @@ It spawns just one Web Worker instance, so don't give it more credit than it des
 
 ## Demos
   - [N-Queen Solver](http://chikeichan.github.io/redux-worker/demo/nqueen/index.html)
+
 To run the demo locally, cd into the demo directory, and then:
 ```bash
 npm i
