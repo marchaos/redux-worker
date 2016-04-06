@@ -2,7 +2,10 @@
 
 Redux-Worker is a [middleware](http://redux.js.org/docs/advanced/Middleware.html) for [Redux](https://github.com/reactjs/redux).
 
-It helps you build multi-thread JavaScript applications by moving your reducer into a Web Worker. It also provide a simple API for you to register tasks to be executed in the web worker outside of Redux. 
+It helps you build multi-thread JavaScript applications by moving your reducer into a Web Worker. It also provide a simple [API](https://github.com/chikeichan/redux-worker/blob/master/API.md) for you to register tasks to be executed in the web worker outside of Redux. 
+
+## Documentation
+See [API](https://github.com/chikeichan/redux-worker/blob/master/API.md)
 
 ## Inspiration
 
