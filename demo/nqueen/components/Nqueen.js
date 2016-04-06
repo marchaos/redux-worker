@@ -39,9 +39,9 @@ export default createClass({
 	runTask() {
 		this.props.actions.testWorker(this.state.inputValue)
 			.then(function(e) {
-				console.log('This task is run directly on the web worker without going thru Redux.');
-				console.log(`The taskId is ${e._taskId}.`);
-				console.log(`The answer is ${e.response}.`);
+				alert(
+					`This task is run directly on the web worker without going thru Redux.\nThe taskId is ${e._taskId}.\nThe answer is ${e.response}.`
+				);
 			});
 	},
 

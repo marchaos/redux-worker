@@ -2,8 +2,7 @@ const createWorker = (reducer) => {
 	// Initialize ReduxWorekr
 	let worker = new ReduxWorker();
 	
-
-	self.addEventListener('message', function(e) {
+	let messageHandler = (e) => {
 		var action = e.data;
 
 		if (typeof action.type === 'string') {
@@ -39,7 +38,14 @@ const createWorker = (reducer) => {
 				response: taskRunner(action)
 			});
 		}
-	});
+	}
+
+	worker.destroy = () => {
+		self.removeEventListener('message', messageHandler);
+	}
+
+	self.addEventListener('message', messageHandler);
+
 
 	return worker;
 }
