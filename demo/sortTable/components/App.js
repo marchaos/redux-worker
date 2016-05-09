@@ -1,4 +1,5 @@
 import React, {Component, PropTypes} from 'react';
+import UserTableContainer from '../containers/UserTableContainer'
 
 class App extends Component {
 	constructor(props) {
@@ -6,7 +7,7 @@ class App extends Component {
 	}
 
 	render() {
-		return <div>Hello World!</div>
+		return <UserTableContainer />
 	}
 }
 
