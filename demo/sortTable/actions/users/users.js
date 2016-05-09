@@ -1,18 +1,21 @@
-export function sortFirstName() {
+export function sortFirstName(reverse) {
 	return {
-		type: 'SORT_BY_FIRST'
+		type: 'SORT_BY_FIRST',
+		reverse: reverse
 	};
 }
 
-export function sortLastName() {
+export function sortLastName(reverse) {
 	return {
-		type: 'SORT_BY_LAST'
+		type: 'SORT_BY_LAST',
+		reverse: reverse
 	};
 }
 
-export function sortDateOfBirth() {
+export function sortDateOfBirth(reverse) {
 	return {
-		type: 'SORT_BY_DOB'
+		type: 'SORT_BY_DOB',
+		reverse: reverse
 	};
 }
 
