@@ -19,3 +19,10 @@ export function sortDateOfBirth(reverse) {
 	};
 }
 
+export function generateUsers(num) {
+	return {
+		type: 'GENERATE_USERS',
+		number: num
+	};
+}
+

@@ -50,20 +50,18 @@ class Table extends Component {
 		} = this.props;
 
 		return (
-			<div>
-				<table>
-					<thead>
-						<tr>
-							<th onClick={this.sortFirstName.bind(this)}>First Name</th>
-							<th onClick={this.sortLastName.bind(this)}>Last Name</th>
-							<th onClick={this.sortDoB.bind(this)}>Date of Birth</th>
-						</tr>
-					</thead>
-					<tbody>
-						{users.map(this.makeOneRow)}
-					</tbody>
-				</table>
-			</div>
+			<table>
+				<thead>
+					<tr>
+						<th onClick={this.sortFirstName.bind(this)}>First Name</th>
+						<th onClick={this.sortLastName.bind(this)}>Last Name</th>
+						<th onClick={this.sortDoB.bind(this)}>Date of Birth</th>
+					</tr>
+				</thead>
+				<tbody>
+					{users.map(this.makeOneRow)}
+				</tbody>
+			</table>
 		);
 	}
 }

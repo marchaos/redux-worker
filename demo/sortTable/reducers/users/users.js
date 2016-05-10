@@ -2,7 +2,6 @@ import Faker, {fake} from 'faker'
 
 const generateUser = () => {
 	return {
-		avatarUrl: fake('{{image.imageUrl}}'),
 		firstName: fake('{{name.firstName}}'),
 		lastName: fake('{{name.lastName}}'),
 		dateOfBirth: fake('{{date.past}}')
@@ -17,7 +16,7 @@ const generateUsers = (n) => {
 	return users;
 }
 
-const intState = generateUsers(100);
+const intState = generateUsers(10);
 
 const sortByFirstName = (users, reverse) => {
 	return users.slice()
@@ -59,6 +58,8 @@ export default (state = intState, action) => {
 			return sortByLastName(state, action.reverse);
 		case 'SORT_BY_DOB':
 			return sortByDOB(state, action.reverse);
+		case 'GENERATE_USERS':
+			return generateUsers(action.number || 10);
 		default:
 			return state;
 	}
