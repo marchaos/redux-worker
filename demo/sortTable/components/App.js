@@ -16,7 +16,7 @@ class App extends Component {
 					boxShadow: '0 0 2px 0px rgba(0, 0, 0, 0.7)',
 					borderRadius: '5px',
 					padding: '4px',
-					backgroundColor: 'white'
+					backgroundColor: 'white',
 				}}>
 				<GeneratorContainer />
 				<UserTableContainer />

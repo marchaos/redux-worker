@@ -10,12 +10,12 @@ import createLogger from 'redux-logger';
 
 const logger = createLogger();
 
-// const worker = new Worker('./dist/worker.bundle.js');
+const worker = new Worker('./dist/worker.bundle.js');
 
 const enhancerWithWorker = compose(
 	// Middleware you want to use in development:
-	applyMiddleware(thunk, logger)
-	// applyWorker(worker)
+	applyMiddleware(thunk, logger),
+	applyWorker(worker)
 );
 
 const store = createStore(rootReducer, {}, enhancerWithWorker);
@@ -26,3 +26,5 @@ render(
 	</Provider>,
 	document.getElementById('app')
 )
+
+
