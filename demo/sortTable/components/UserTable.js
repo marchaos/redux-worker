@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import LoadingSpinner from './Spinner.js';
+import LoadingSpinner from 'react-spinner';
 import Infinite from 'react-infinite';
 
 class Table extends Component {
@@ -15,7 +15,7 @@ class Table extends Component {
 
 	makeOneRow(user, i) {
 		return (
-			<div key={`table-row-${i}`}
+			<div key={user.uuid}
 				style={{
 					display: 'flex',
 					flexFlow: 'row nowrap'
@@ -88,6 +88,7 @@ class Table extends Component {
 					flex: 1,
 					overflow: 'hidden'
 				}}>
+				{isSorting ? <LoadingSpinner /> : null}
 				<div
 					style={{
 						display: 'flex',
@@ -107,7 +108,8 @@ class Table extends Component {
 						Date of Birth
 					</div>
 				</div>
-				<div className='user-table--body'>
+				<div className='user-table--body'
+					style={{opacity: isSorting ? 0.25 : 1}}>
 					{users.map(this.makeOneRow)}
 				</div>
 			</div>

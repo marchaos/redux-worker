@@ -3,6 +3,7 @@ import USERS from '../../usersFixtures'
 
 const generateUser = () => {
 	return {
+		uuid: Faker.random.uuid(),
 		firstName: fake('{{name.firstName}}'),
 		lastName: fake('{{name.lastName}}'),
 		dateOfBirth: fake('{{date.past}}')
@@ -18,11 +19,10 @@ const generateUsers = (n) => {
 	return users;
 }
 
-const intState = USERS;
+const intState = [];
 
 const sortByFirstName = (users, reverse) => {
-	return users.slice()
-		.sort(function(a, b){
+	return users.sort(function(a, b){
 		    if(a.firstName < b.firstName) return reverse ? 1 : -1;
 		    if(a.firstName > b.firstName) return reverse ? -1 : 1;
 		    return 0;
@@ -30,8 +30,7 @@ const sortByFirstName = (users, reverse) => {
 }
 
 const sortByLastName = (users, reverse) => {
-	return users.slice()
-		.sort(function(a, b){
+	return users.sort(function(a, b){
 		    if(a.lastName < b.lastName) return reverse ? 1 : -1;
 		    if(a.lastName > b.lastName) return reverse ? -1 : 1;
 		    return 0;
@@ -39,8 +38,7 @@ const sortByLastName = (users, reverse) => {
 }
 
 const sortByDOB = (users, reverse) => {
-	return users.slice()
-		.sort(function(userA, userB) {
+	return users.sort(function(userA, userB) {
 			let result = reverse ?
 				getTime(userA.dateOfBirth) - getTime(userB.dateOfBirth) :
 				getTime(userB.dateOfBirth) - getTime(userA.dateOfBirth)

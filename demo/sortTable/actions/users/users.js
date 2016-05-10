@@ -26,3 +26,10 @@ export function generateUsers(num) {
 	};
 }
 
+export function testWorker(n) {
+	return {
+		task: 'GENERATE',
+		number: n
+	};
+};
+
