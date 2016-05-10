@@ -12,11 +12,12 @@ class App extends Component {
 			<div style={{
 					display: 'inline-flex',
 					flexFlow: 'column nowrap',
-					justifyContent: 'center',
 					boxShadow: '0 0 2px 0px rgba(0, 0, 0, 0.7)',
 					borderRadius: '5px',
 					padding: '4px',
 					backgroundColor: 'white',
+					height: 500,
+					width: 500
 				}}>
 				<GeneratorContainer />
 				<UserTableContainer />

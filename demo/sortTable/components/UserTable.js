@@ -15,10 +15,14 @@ class Table extends Component {
 
 	makeOneRow(user, i) {
 		return (
-			<div key={`table-row-${i}`}>
-				<div>{user.firstName}</div>
-				<div>{user.lastName}</div>
-				<div>{user.dateOfBirth.slice(4, 15)}</div>
+			<div key={`table-row-${i}`}
+				style={{
+					display: 'flex',
+					flexFlow: 'row nowrap'
+				}}>
+				<div className='user-table--row'>{user.firstName}</div>
+				<div className='user-table--row'>{user.lastName}</div>
+				<div className='user-table--row'>{user.dateOfBirth.slice(4, 15)}</div>
 			</div>
 		)
 	}
@@ -66,34 +70,6 @@ class Table extends Component {
 		}, 200);
 	}
 
-	getStylesIfSorting(isSorting) {
-		if (isSorting) {
-
-			return {
-				opacity: '0.5',
-			}
-		}
-
-		return {};
-	}
-
-	getSpinnerStyles() {
-		let spinnerStyles = {
-			position: "absolute",
-			display: "flex",
-			"marginLeft": "auto",
-	    "marginRight": "auto",
-	    "left": "0",
-	    "right": "0",
-	    "marginTop": "auto",
-	    "marginBottom": "auto",
-	    "top": "40px",
-	    "bottom": "0"
-		}
-
-		return spinnerStyles;
-	}
-
 	render() {
 		const {
 			users = []
@@ -103,23 +79,36 @@ class Table extends Component {
 			isSorting
 		} = this.state;
 
-		const sortingStyles = this.getStylesIfSorting(isSorting);
-
 		return (
-			<div style={{position:"relative"}}>
-
-				<div style={sortingStyles}>
-					<div>
-							<div onClick={this.sortFirstName.bind(this)}>First Name</div>
-							<div onClick={this.sortLastName.bind(this)}>Last Name</div>
-							<div onClick={this.sortDoB.bind(this)}>Date of Birth</div>
+			<div 
+				style={{
+					display: 'flex',
+					flexFlow: 'column nowrap',
+					position: 'relative',
+					flex: 1,
+					overflow: 'hidden'
+				}}>
+				<div
+					style={{
+						display: 'flex',
+						flexFlow: 'row nowrap',
+						flex: '0 0 auto'
+					}}>
+					<div className='user-table--header'
+						onClick={this.sortFirstName.bind(this)}>
+						First Name
 					</div>
-					<div>
-						<div>{(isSorting) ? <LoadingSpinner style={this.getSpinnerStyles()}/> : null }</div>
-						<Infinite containerHeight={500} elementHeight={25}>
-						{ users.map(this.makeOneRow)}
-						</Infinite>
+					<div className='user-table--header'
+						onClick={this.sortLastName.bind(this)}>
+						Last Name
 					</div>
+					<div className='user-table--header'
+						onClick={this.sortDoB.bind(this)}>
+						Date of Birth
+					</div>
+				</div>
+				<div className='user-table--body'>
+					{users.map(this.makeOneRow)}
 				</div>
 			</div>
 		);

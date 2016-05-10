@@ -20,8 +20,13 @@
 		}
 
 		button {
-			background-color: rgba(0, 0, 0, 0.4);
+			background-color: rgba(0, 0, 0, 0.2);
 			cursor: pointer;
+			border: 0;
+			border-radius: 2px;
+			margin: 8px 16px;
+			padding: 8px 16px;
+			flex: 1;
 		}
 
 		button:active {
@@ -31,45 +36,33 @@
 		button:hover {
 			background-color: rgba(0, 0, 0, 0.3);
 		}
-	</style>
 
-	<style>
-		.react-spinner {
-		  position: relative;
-		  width: 32px;
-		  height: 32px;
-		  top: 50%;
-		  left: 50%;
+		.user-table--body {
+			display: block;
+			flex-flow: column nowrap;
+			overflow: scroll;
 		}
 
-		.react-spinner_bar {
-		  -webkit-animation: react-spinner_spin 1.2s linear infinite;
-		  -moz-animation: react-spinner_spin 1.2s linear infinite;
-		  animation: react-spinner_spin 1.2s linear infinite;
-		  border-radius: 5px;
-		  background-color: red;
-		  position: absolute;
-		  width: 20%;
-		  height: 7.8%;
-		  top: -3.9%;
-		  left: -10%;
+		.user-table--header,
+		.user-table--row {
+			flex: 1;
+			font-size: 14px;
+			cursor: pointer;
+			padding: 8px 16px;
+			border-bottom: 1px solid rgba(0, 0, 0, 0.3);
 		}
 
-		@keyframes react-spinner_spin {
-		 0% { opacity: 1; }
-		 100% { opacity: 0.15; }
+		.user-table--header + .user-table--header {
+			border-left: 1px solid rgba(0, 0, 0, 0.3);
 		}
 
-		@-moz-keyframes react-spinner_spin {
-		 0% { opacity: 1; }
-		 100% { opacity: 0.15; }
+		.user-table--header:hover {
+			background-color: rgba(57, 220, 236, 0.10);
 		}
 
-		@-webkit-keyframes react-spinner_spin {
-		 0% { opacity: 1; }
-		 100% { opacity: 0.15; }
+		.user-table--header:active {
+			background-color: rgba(57, 220, 236, 0.25);
 		}
-
 	</style>
 </head>
 <body>
