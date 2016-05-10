@@ -1,4 +1,5 @@
 import Faker, {fake} from 'faker'
+import USERS from '../../usersFixtures'
 
 const generateUser = () => {
 	return {
@@ -13,10 +14,11 @@ const generateUsers = (n) => {
 	for (let i = 0; i < n; i++) {
 		users.push(generateUser());
 	}
+
 	return users;
 }
 
-const intState = generateUsers(10);
+const intState = USERS;
 
 const sortByFirstName = (users, reverse) => {
 	return users.slice()
