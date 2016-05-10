@@ -6,7 +6,8 @@ class Table extends Component {
 		this.state = {
 			isFirstNameReverse: false,
 			isLastNameReverse: false,
-			isDoBReverse: false
+			isDoBReverse: false,
+			isSorting: false
 		}
 	}
 
@@ -22,32 +23,54 @@ class Table extends Component {
 
 	sortFirstName() {
 		let {isFirstNameReverse} = this.state;
+
 		this.setState({
-			isFirstNameReverse: !isFirstNameReverse
+			isFirstNameReverse: !isFirstNameReverse,
+			isSorting: true
 		});
-		this.props.onClickFirstName(isFirstNameReverse);
+
+		setTimeout(() => {
+			this.props.onClickFirstName(isFirstNameReverse);
+			this.setState({ isSorting: false });
+		}, 200);
 	}
 
 	sortLastName() {
 		let {isLastNameReverse} = this.state;
+
 		this.setState({
-			isLastNameReverse: !isLastNameReverse
+			isLastNameReverse: !isLastNameReverse,
+			isSorting: true
 		});
-		this.props.onClickLastName(isLastNameReverse);
+
+		setTimeout(() => {
+			this.props.onClickLastName(isLastNameReverse);
+			this.setState({ isSorting: false });
+		}, 200);
 	}
 
 	sortDoB() {
 		let {isDoBReverse} = this.state;
+
 		this.setState({
-			isDoBReverse: !isDoBReverse
+			isDoBReverse: !isDoBReverse,
+			isSorting: true
 		});
-		this.props.onClickDoB(isDoBReverse);
+
+		setTimeout(() => {
+			this.props.onClickDoB(isDoBReverse);
+			this.setState({ isSorting: false });
+		}, 200);
 	}
 
 	render() {
 		const {
 			users = []
 		} = this.props;
+
+		const {
+			isSorting
+		} = this.state;
 
 		return (
 			<table>
@@ -59,7 +82,7 @@ class Table extends Component {
 					</tr>
 				</thead>
 				<tbody>
-					{users.map(this.makeOneRow)}
+					{ isSorting ? <div>Sorting...</div> : users.map(this.makeOneRow)}
 				</tbody>
 			</table>
 		);
