@@ -52,7 +52,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -75,192 +75,128 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.createWorker = _createWorker2.default;
 	exports.default = { applyWorker: _applyWorker2.default, createWorker: _createWorker2.default };
 
-/***/ },
+/***/ }),
 /* 1 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
-		value: true
+	    value: true
 	});
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var createWorker = function createWorker(reducer) {
-		// Initialize ReduxWorekr
-		var worker = new ReduxWorker();
+	var createWorker = function createWorker() {
+	    var actionPrefix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
 
-		self.addEventListener('message', function (e) {
-			var action = e.data;
+	    var worker = new ReduxWorker();
 
-			if (typeof action.type === 'string') {
-				if (!worker.reducer || typeof worker.reducer !== 'function') {
-					throw new Error('Expect reducer to be function. Have you registerReducer yet?');
-				}
+	    var messageHandler = function messageHandler(e) {
+	        var action = e.data;
 
-				// Set new state
-				var state = worker.state;
-				state = worker.state = worker.reducer(state, action);
-				state = worker.transform(state);
+	        if (typeof action.type === 'string') {
+	            if (!worker.reducer || typeof worker.reducer !== 'function') {
+	                throw new Error('Expect reducer to be function. Have you registerReducer yet?');
+	            }
 
-				// Send new state to main thread
-				self.postMessage({
-					type: action.type,
-					state: state,
-					action: action
-				});
+	            var state = worker.state;
+	            state = worker.state = worker.reducer(state, action);
 
-				return;
-			}
+	            // Send new state to main thread
+	            console.time("postmessage in");
+	            self.postMessage({
+	                type: '' + actionPrefix + action.type,
+	                state: state,
+	                logToServer: false,
+	                action: action
+	            });
+	            console.timeEnd("postmessage in");
+	        }
+	    };
 
-			if (typeof action.task === 'string' && typeof action._taskId === 'number') {
-				var taskRunner = worker.tasks[action.task];
+	    worker.destroy = function () {
+	        self.removeEventListener('message', messageHandler);
+	    };
 
-				if (!taskRunner || typeof taskRunner !== 'function') {
-					throw new Error('Cannot find runner for task ' + action.task + '. Have you registerTask yet?');
-				}
+	    self.addEventListener('message', messageHandler);
 
-				// Send new state to main thread
-				self.postMessage({
-					_taskId: action._taskId,
-					response: taskRunner(action)
-				});
-			}
-		});
-
-		return worker;
+	    return worker;
 	};
 
 	var ReduxWorker = function () {
-		function ReduxWorker() {
-			_classCallCheck(this, ReduxWorker);
+	    function ReduxWorker() {
+	        _classCallCheck(this, ReduxWorker);
 
-			// Taskrunners
-			this.tasks = {};
+	        this.state = {};
+	        this.reducer = null;
+	    }
 
-			// Redux-specific variables
-			this.state = {};
-			this.reducer = null;
-			this.transform = function (state) {
-				return state;
-			};
-		}
+	    _createClass(ReduxWorker, [{
+	        key: 'registerReducer',
+	        value: function registerReducer(reducer) {
+	            this.reducer = reducer;
+	            this.state = reducer({}, {});
+	        }
+	    }]);
 
-		_createClass(ReduxWorker, [{
-			key: 'registerReducer',
-			value: function registerReducer(reducer, transform) {
-				this.reducer = reducer;
-				this.state = reducer({}, {});
-			}
-		}, {
-			key: 'registerTask',
-			value: function registerTask(name, taskFn) {
-				this.tasks[name] = taskFn;
-			}
-		}]);
-
-		return ReduxWorker;
+	    return ReduxWorker;
 	}();
 
 	exports.default = createWorker;
 
-/***/ },
+/***/ }),
 /* 2 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
-	'use strict';
+	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
-		value: true
+	    value: true
 	});
-	var defer = function defer() {
-		var result = {};
-		result.promise = new Promise(function (resolve, reject) {
-			result.resolve = resolve;
-			result.reject = reject;
-		});
-		return result;
-	};
-
 	var applyWorker = function applyWorker(worker) {
-		return function (createStore) {
-			return function (reducer, initialState, enhancer) {
-				if (!(worker instanceof Worker)) {
-					console.error('Expect input to be a Web Worker. Fall back to normal store.');
-					return createStore(reducer, initialState, enhancer);
-				}
+	    return function (createStore) {
+	        return function (reducer, initialState, enhancer) {
+	            if (!(worker instanceof Worker)) {
+	                console.error('Expect input to be a Web Worker. Fall back to normal store.');
+	                return createStore(reducer, initialState, enhancer);
+	            }
 
-				// New reducer for workified store
-				var replacementReducer = function replacementReducer(state, action) {
-					if (action.state) {
-						return action.state;
-					}
-					return state;
-				};
+	            var store = createStore(reducer, reducer({}, {}), enhancer);
 
-				// Start task id;
-				var taskId = 0;
-				var taskCompleteCallbacks = {};
+	            // Store reference of old dispatcher
+	            var next = store.dispatch;
 
-				// Create store using new reducer
-				var store = createStore(replacementReducer, reducer({}, {}), enhancer);
+	            // Replace dispatcher
+	            store.dispatch = function (action) {
+	                if (action.useWorker === true) {
+	                    console.info("using worker");
+	                    console.time("postmessage out");
+	                    worker.postMessage(action);
+	                    console.timeEnd("postmessage out");
+	                } else {
+	                    return next(action);
+	                }
+	            };
 
-				// Store reference of old dispatcher
-				var next = store.dispatch;
+	            // Add worker events listener
+	            worker.addEventListener('message', function (e) {
+	                var action = e.data;
+	                if (typeof action.type === 'string') {
+	                    next(action);
+	                }
+	            });
 
-				// Replace dispatcher
-				store.dispatch = function (action) {
-					if (typeof action.type === 'string') {
-						if (window.disableWebWorker) {
-							return next({
-								type: action.type,
-								state: reducer(store.getState(), action)
-							});
-						}
-						worker.postMessage(action);
-					}
-
-					if (typeof action.task === 'string') {
-						var task = Object.assign({}, action, { _taskId: taskId });
-						var deferred = defer();
-
-						taskCompleteCallbacks[taskId] = deferred;
-						taskId++;
-						worker.postMessage(task);
-						return deferred.promise;
-					}
-				};
-
-				store.isWorker = true;
-
-				// Add worker events listener
-				worker.addEventListener('message', function (e) {
-					var action = e.data;
-					if (typeof action.type === 'string') {
-						next(action);
-					}
-
-					if (typeof action._taskId === 'number') {
-						var wrapped = taskCompleteCallbacks[action._taskId];
-
-						if (wrapped) {
-							wrapped.resolve(action);
-							delete taskCompleteCallbacks[action._taskId];
-						}
-					}
-				});
-
-				return store;
-			};
-		};
+	            return store;
+	        };
+	    };
 	};
 
 	exports.default = applyWorker;
 
-/***/ }
+/***/ })
 /******/ ])
 });
 ;
